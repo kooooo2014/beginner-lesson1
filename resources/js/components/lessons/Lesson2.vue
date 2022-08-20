@@ -24,15 +24,15 @@
                         <div class="quesion-header">２．年齢を表示してください。</div>
                         <label for="birthday">お誕生日は？</label>
                         <input type="date" id="birthday" v-model="birthday">
-
+                        
                         <p v-if="age >= 0">{{ age }} 歳ですね！</p>
                         <p v-else>お誕生日を入力してください。</p>
                     </div>
                     <div class="mb-5">
                         <div class="quesion-header">３．プラスボタン、マイナスボタンで数値を変更できるようにしてください。</div>
                         <label>カウンター</label>
-                        <button style="width:2rem;">+</button>
-                        <button style="width:2rem;">-</button>
+                        <button style="width:2rem;" @click="plus">+</button>
+                        <button style="width:2rem;" @click="minus">-</button>
                         {{ count }}
                     </div>
                 </div>
@@ -53,6 +53,7 @@ export default {
             right: 0,
             birthday: null,
             count: 0,
+            today: new Date()
         }
     },
     mounted () {
@@ -63,15 +64,31 @@ export default {
     },
     computed: {
         total() {
-
+            return this.left + this.right
+        },
+        _today() {
+            return parseInt("" + this.today.getFullYear() + this.affixZero(this.today.getMonth() + 1) + this.affixZero(this.today.getDate()))
         },
         age() {
+            let tmpBirth = (String(this.birthday)).split("-")
+            let _tmpBirth = parseInt(tmpBirth[0] + tmpBirth[1] + tmpBirth[2])
+            return parseInt((this._today - _tmpBirth) / 10000)
 
         }
     },
     methods: {
         onBack() {
             this.$router.push({ name: 'home' })
+        },
+        plus() {
+            this.count ++
+        },
+        minus() {
+            this.count --
+        },
+        affixZero(int) {
+            if (int < 10) int = "0" + int;
+            return "" + int;
         }
     },
 }
